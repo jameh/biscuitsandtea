@@ -58,7 +58,7 @@ int main (int argc, char *argv[]) {
 ```
 
 ##Usage
-On your remote machine, compile using gcc to somewhere in your PATH:
+On your remote machine, compile using gcc to somewhere in your `PATH`:
 ```bash
 gcc remote_command.c -o /usr/local/bin/remote_command
 ```
@@ -74,4 +74,25 @@ for i in {1..5}
 do
     remote_command -n /dev/tty1 echo Hello, tty$i!
 done
+```
+
+##Simplified Usage
+
+If you are just running commands remotely, and can assume they are always to be run on `/dev/tty1`, you can simplify the process a bit with the following script:
+
+`/usr/local/bin/remote` (or somewhere on your path):
+```bash
+#!/bin/bash
+
+TTY=/dev/tty1
+
+echo sending $@ to $TTY
+
+sudo run_command -n $TTY $@
+```
+
+don't forget to `chmod +x /usr/local/bin/remote`, and then you can simply run commands like
+
+```bash
+remote startx
 ```
