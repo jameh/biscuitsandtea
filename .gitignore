@@ -2,3 +2,6 @@
 venv*/
 config.rb
 .sass-cache/
+.tags
+*.sublime-project
+*.sublime-workspace
