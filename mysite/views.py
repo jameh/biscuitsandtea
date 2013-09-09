@@ -1,5 +1,5 @@
 #!/bin/python2
-from flask import render_template, render_template_string, safe_join, abort
+from flask import render_template, render_template_string, safe_join, abort, send_from_directory
 from markdown import markdown
 from mysite import app
 from os import listdir
@@ -46,38 +46,44 @@ ignore_perc = IgnorePercentExtension()
 
 @app.route("/")
 def home():
-    previews = {p[:-3]: parse_markdown(open_markdown(p), preview=True) for p in 
-           listdir(app.config['POSTS_FOLDER'])}
+    previews = {p[:-3]: parse_markdown(open_resource(p, 'POSTS_FOLDER'),
+                                       preview=True) for p in
+                                       listdir(app.config['POSTS_FOLDER'])}
     return render_template("home.html", previews=previews)
 
 
 @app.route("/posts/<postname>")
 def post(postname):
-    path = safe_join(app.config['POSTS_FOLDER'], postname + '.md')
-    print(path)
-    md = open_markdown(postname + '.md')
-    if md == 404:
-        abort(404)
-    else:
+    try:
+        md = open_resource(postname + '.md', 'POSTS_FOLDER')
         html_content = parse_markdown(md)
         return render_template("post.html", content=html_content)
-
-
-@app.route(app.config['MEDIA_URL']+"<filename>")
-def media(filename):
-    try:
-        with open(safe_join(app.config['MEDIA_FOLDER'], filename)) as f:
-            return f.read()
     except IOError:
         abort(404)
 
-def open_markdown(filename):
-    path = safe_join(app.config['POSTS_FOLDER'], filename)
+
+@app.route(app.config['MEDIA_URL'] + "<filename>")
+def media(filename):
     try:
-        with open(path) as f:
-            return f.read()
+        return open_resource(filename, 'MEDIA_FOLDER')
     except IOError:
-        return 404
+        abort(404)
+
+
+@app.route(app.config['NOTES_URL'] + "<filename>")
+def notes(filename):
+    return "hello"
+    print(filename)
+    path = safe_join(app.config['NOTES_FOLDER'], filename)
+    print(path)
+    print(send_from_directory(app.config['NOTES_FOLDER'], filename))
+    return "hello"
+
+
+def open_resource(filename, config_folder):
+    with open(safe_join(app.config[config_folder], filename)) as f:
+        return f.read()
+
 
 def parse_markdown(md, preview=False):
     md = render_template_string(md, MEDIA_URL=app.config['MEDIA_FOLDER'])
