@@ -70,16 +70,6 @@ def media(filename):
         abort(404)
 
 
-@app.route(app.config['NOTES_URL'] + "<filename>")
-def notes(filename):
-    return "hello"
-    print(filename)
-    path = safe_join(app.config['NOTES_FOLDER'], filename)
-    print(path)
-    print(send_from_directory(app.config['NOTES_FOLDER'], filename))
-    return "hello"
-
-
 def open_resource(filename, config_folder):
     with open(safe_join(app.config[config_folder], filename)) as f:
         return f.read()
