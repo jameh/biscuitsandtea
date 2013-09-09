@@ -99,21 +99,21 @@ def sing(n=0):
         print("your boat", end="")
     elif n == 4:
         print("gently down the stream", end="")
-    elif n > 4 and n < 8:
+    elif n > 4 and n < 9:
         print("merrily", end="")
-    elif n == 8:
+    elif n == 9:
         print("life is but a dream", end="")
-
-    if n < 2 or (n > 4 and n < 8):
+    
+    if n < 2 or (n > 4 and n < 9):
         print(", ", end="")
     elif n == 4:
         print(";")
-    elif n == 8:
+    elif n == 9:
         print(".")
         return
     else:
         print(" ", end="")
-
+    
     sing(n+1)
 
 sing()
